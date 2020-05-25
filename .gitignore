@@ -3,3 +3,5 @@
 # misc
 .DS_Store
 yarn.lock
+private.pem
+public.pem
