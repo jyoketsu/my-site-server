@@ -170,6 +170,25 @@ class BaseDao {
       });
     });
   }
+
+  /**
+   * 获取数量
+   *
+   * @param filter
+   * @returns {Promise}
+   */
+  count(filter) {
+    return new Promise((resolve, reject) => {
+      this.Model.countDocuments(filter, (error, results) => {
+        if (error) {
+          console.log("countDocuments error--> ", error);
+          reject(error);
+        } else {
+          resolve(results);
+        }
+      });
+    });
+  }
 }
 
 module.exports = BaseDao;

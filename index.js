@@ -3,6 +3,10 @@ const app = express();
 const mongoose = require("mongoose");
 const user = require("./router/user");
 const category = require("./router/category");
+const tag = require("./router/tag");
+const visitor = require("./router/visitor");
+const link = require("./router/link");
+const article = require("./router/article");
 
 // 连接数据库
 mongoose.connect("mongodb://localhost/mySite", { useNewUrlParser: true });
@@ -34,6 +38,10 @@ app.get("/", function (req, res) {
 });
 app.use("/user", user);
 app.use("/category", category);
+app.use("/tag", tag);
+app.use("/visitor", visitor);
+app.use("/link", link);
+app.use("/article", article);
 
 // 启动服务
 var server = app.listen(8099, () => {

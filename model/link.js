@@ -1,16 +1,26 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
-let categorySchema = new Schema(
+let linkSchema = new Schema(
   {
     name: {
       type: String,
       unique: true,
       max: 50,
       trim: true,
-      required: [true, "名字不能为空"],
+      required: [true, "不能为空"],
     },
-    count: Number,
+    icon: {
+      type: String,
+      trim: true,
+      required: [true, "不能为空"],
+    },
+    uri: {
+      type: String,
+      required: [true, "不能为空"],
+      max: 500,
+      trim: true,
+    },
     createTime: {
       type: Date,
       default: Date.now,
@@ -25,4 +35,4 @@ let categorySchema = new Schema(
   }
 );
 
-module.exports = mongoose.model("Category", categorySchema);
+module.exports = mongoose.model("Link", linkSchema);

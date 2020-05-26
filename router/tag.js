@@ -1,21 +1,22 @@
 var express = require("express");
 var router = express.Router();
 const { check, validationResult } = require("express-validator");
-const CategoryDao = require("../dao/categoryDao");
+const TagDao = require("../dao/tagDao");
 
-// 获取分类
+// 获取标签
 router.get("/", async (req, res) => {
-  let categoryDao = new CategoryDao();
-  const result = await categoryDao.findAll();
+  let tagDao = new TagDao();
+  const result = await tagDao.findAll();
   res.json({ status: 200, result: result });
 });
 
-// 创建分类
+// 创建标签
 router.post(
   "/create",
   [
     check("name").notEmpty().withMessage("缺少参数：name"),
     check("name").isLength({ max: 50 }).withMessage("最多50个字符！"),
+    check("color").notEmpty().withMessage("缺少参数：color"),
   ],
   async (req, res) => {
     // 校验
@@ -23,11 +24,12 @@ router.post(
     if (!errors.isEmpty()) {
       return res.json({ status: 403, errors: errors.mapped() });
     }
-    let categoryDao = new CategoryDao();
+    let tagDao = new TagDao();
     try {
       // 创建
-      const result = await categoryDao.create({
+      const result = await tagDao.create({
         name: req.body.name,
+        color: req.body.color,
         count: 0,
       });
       res.json({ status: 200, result: result });
@@ -35,13 +37,13 @@ router.post(
       res.json({
         status: 500,
         error,
-        msg: error && error.code === 11000 ? "该分类已存在！" : "服务出错！",
+        msg: error && error.code === 11000 ? "该标签已存在！" : "服务出错！",
       });
     }
   }
 );
 
-// 修改分类
+// 修改标签
 router.post(
   "/update",
   [
@@ -54,9 +56,9 @@ router.post(
       return res.json({ status: 403, errors: errors.mapped() });
     }
     try {
-      let categoryDao = new CategoryDao();
+      let tagDao = new TagDao();
       // 更新
-      const result = await categoryDao.update(
+      const result = await tagDao.update(
         { _id: req.body._id },
         req.body.updater
       );
@@ -65,13 +67,13 @@ router.post(
       res.json({
         status: 500,
         error,
-        msg: error && error.code === 11000 ? "该分类已存在！" : "服务出错！",
+        msg: error && error.code === 11000 ? "该标签已存在！" : "服务出错！",
       });
     }
   }
 );
 
-// 删除分类
+// 删除标签
 router.delete(
   "/delete",
   [check("_id").notEmpty().withMessage("缺少_id！")],
@@ -81,9 +83,9 @@ router.delete(
       return res.json({ status: 403, errors: errors.mapped() });
     }
     try {
-      let categoryDao = new CategoryDao();
+      let tagDao = new TagDao();
       // 删除
-      const result = await categoryDao.deleteOne({ _id: req.body._id });
+      const result = await tagDao.deleteOne({ _id: req.body._id });
       res.json({ status: 200, result: result });
     } catch (error) {
       res.json({

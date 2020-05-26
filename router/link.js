@@ -1,21 +1,23 @@
 var express = require("express");
 var router = express.Router();
 const { check, validationResult } = require("express-validator");
-const CategoryDao = require("../dao/categoryDao");
+const LinkDao = require("../dao/linkDao");
 
-// 获取分类
+// 获取链接
 router.get("/", async (req, res) => {
-  let categoryDao = new CategoryDao();
-  const result = await categoryDao.findAll();
+  let linkDao = new LinkDao();
+  const result = await linkDao.findAll();
   res.json({ status: 200, result: result });
 });
 
-// 创建分类
+// 创建链接
 router.post(
   "/create",
   [
     check("name").notEmpty().withMessage("缺少参数：name"),
-    check("name").isLength({ max: 50 }).withMessage("最多50个字符！"),
+    check("name").isLength({ max: 50 }).withMessage("name最多50个字符！"),
+    check("icon").notEmpty().withMessage("缺少参数：icon"),
+    check("uri").notEmpty().withMessage("缺少参数：uri"),
   ],
   async (req, res) => {
     // 校验
@@ -23,25 +25,26 @@ router.post(
     if (!errors.isEmpty()) {
       return res.json({ status: 403, errors: errors.mapped() });
     }
-    let categoryDao = new CategoryDao();
+    let linkDao = new LinkDao();
     try {
       // 创建
-      const result = await categoryDao.create({
+      const result = await linkDao.create({
         name: req.body.name,
-        count: 0,
+        icon: req.body.icon,
+        uri: req.body.uri,
       });
       res.json({ status: 200, result: result });
     } catch (error) {
       res.json({
         status: 500,
         error,
-        msg: error && error.code === 11000 ? "该分类已存在！" : "服务出错！",
+        msg: error && error.code === 11000 ? "该链接名已存在！" : "服务出错！",
       });
     }
   }
 );
 
-// 修改分类
+// 修改链接
 router.post(
   "/update",
   [
@@ -54,9 +57,9 @@ router.post(
       return res.json({ status: 403, errors: errors.mapped() });
     }
     try {
-      let categoryDao = new CategoryDao();
+      let linkDao = new LinkDao();
       // 更新
-      const result = await categoryDao.update(
+      const result = await linkDao.update(
         { _id: req.body._id },
         req.body.updater
       );
@@ -65,13 +68,13 @@ router.post(
       res.json({
         status: 500,
         error,
-        msg: error && error.code === 11000 ? "该分类已存在！" : "服务出错！",
+        msg: error && error.code === 11000 ? "该链接名已存在！" : "服务出错！",
       });
     }
   }
 );
 
-// 删除分类
+// 删除链接
 router.delete(
   "/delete",
   [check("_id").notEmpty().withMessage("缺少_id！")],
@@ -81,9 +84,9 @@ router.delete(
       return res.json({ status: 403, errors: errors.mapped() });
     }
     try {
-      let categoryDao = new CategoryDao();
+      let linkDao = new LinkDao();
       // 删除
-      const result = await categoryDao.deleteOne({ _id: req.body._id });
+      const result = await linkDao.deleteOne({ _id: req.body._id });
       res.json({ status: 200, result: result });
     } catch (error) {
       res.json({
