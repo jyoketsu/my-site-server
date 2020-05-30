@@ -13,7 +13,7 @@ class ArticleDao extends BaseDao {
       this.Model.find(filter)
         .populate("auth", { username: 1 })
         .populate("category", { name: 1 })
-        .populate("tag", { name: 1, color: 1 })
+        .populate("tags", { name: 1, color: 1 })
         .skip(skip)
         .limit(pageSize)
         .sort(sorter ? sorter : { updateTime: -1 })

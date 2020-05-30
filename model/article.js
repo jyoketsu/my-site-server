@@ -15,6 +15,7 @@ let articleSchema = new Schema(
     // 文章类型 1:markdown；2:富文本
     type: {
       type: Number,
+      default: 1,
       required: [true, "类型不能为空"],
     },
     viewCount: {
@@ -31,10 +32,12 @@ let articleSchema = new Schema(
       ref: "Category",
       required: [true, "分类不能为空"],
     },
-    tag: {
-      type: Schema.Types.ObjectId,
-      ref: "Tag",
-    },
+    tags: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Tag",
+      },
+    ],
     createTime: {
       type: Date,
       default: Date.now,

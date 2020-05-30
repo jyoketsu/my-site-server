@@ -48,7 +48,7 @@ router.post(
         type: req.body.type,
         auth: req.body.auth,
         category: req.body.category,
-        tag: req.body.tag,
+        tags: req.body.tags,
       });
       res.json({ status: 200, result: result });
     } catch (error) {
