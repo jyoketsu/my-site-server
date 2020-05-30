@@ -17,6 +17,7 @@ class ArticleDao extends BaseDao {
         .skip(skip)
         .limit(pageSize)
         .sort(sorter ? sorter : { updateTime: -1 })
+        .select("-content")
         .exec(function (err, record) {
           if (err) {
             reject(err);

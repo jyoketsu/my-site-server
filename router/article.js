@@ -11,16 +11,39 @@ router.get(
     check("pageSize").notEmpty().withMessage("缺少参数：pageSize"),
   ],
   async (req, res) => {
-    let articleDao = new ArticleDao();
-    const result = await articleDao.find(
-      {},
-      null,
-      parseInt(req.query.current),
-      parseInt(req.query.pageSize)
-    );
-    res.json({ status: 200, result: result });
+    try {
+      let articleDao = new ArticleDao();
+      const result = await articleDao.find(
+        {},
+        null,
+        parseInt(req.query.current),
+        parseInt(req.query.pageSize)
+      );
+      res.json({ status: 200, result: result });
+    } catch (error) {
+      res.json({
+        status: 500,
+        error,
+        msg: "服务出错！",
+      });
+    }
   }
 );
+
+// 根据id获取文章
+router.get("/findById", async (req, res) => {
+  try {
+    let articleDao = new ArticleDao();
+    const result = await articleDao.findById(req.query._id);
+    res.json({ status: 200, result: result });
+  } catch (error) {
+    res.json({
+      status: 500,
+      error,
+      msg: "服务出错！",
+    });
+  }
+});
 
 // 创建文章
 router.post(
@@ -44,6 +67,7 @@ router.post(
       // 创建
       const result = await articleDao.create({
         title: req.body.title,
+        cover: req.body.cover,
         content: req.body.content,
         type: req.body.type,
         auth: req.body.auth,

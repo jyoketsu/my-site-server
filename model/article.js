@@ -8,6 +8,9 @@ let articleSchema = new Schema(
       max: 200,
       required: [true, "标题不能为空"],
     },
+    cover: {
+      type: String,
+    },
     content: {
       type: String,
       required: [true, "内容不能为空"],
