@@ -4,37 +4,45 @@ const { check, validationResult } = require("express-validator");
 const ArticleDao = require("../dao/articleDao");
 
 // 获取文章
-router.get(
-  "/",
-  [
-    check("current").notEmpty().withMessage("缺少参数：current"),
-    check("pageSize").notEmpty().withMessage("缺少参数：pageSize"),
-  ],
-  async (req, res) => {
-    try {
-      let articleDao = new ArticleDao();
-      const result = await articleDao.find(
-        {},
-        null,
-        parseInt(req.query.current),
-        parseInt(req.query.pageSize)
-      );
-      res.json({ status: 200, result: result });
-    } catch (error) {
-      res.json({
-        status: 500,
-        error,
-        msg: "服务出错！",
-      });
-    }
+router.get("/", async (req, res) => {
+  try {
+    let articleDao = new ArticleDao();
+    const result = await articleDao.find(
+      {},
+      null,
+      req.query.current ? parseInt(req.query.current) : undefined,
+      req.query.pageSize ? parseInt(req.query.pageSize) : undefined
+    );
+    res.json({ status: 200, result: result });
+  } catch (error) {
+    res.json({
+      status: 500,
+      error,
+      msg: "服务出错！",
+    });
   }
-);
+});
 
 // 根据id获取文章
 router.get("/findById", async (req, res) => {
   try {
     let articleDao = new ArticleDao();
     const result = await articleDao.findById(req.query._id);
+    res.json({ status: 200, result: result });
+  } catch (error) {
+    res.json({
+      status: 500,
+      error,
+      msg: "服务出错！",
+    });
+  }
+});
+
+// 根据id获取文章
+router.get("/findByIdDetail", async (req, res) => {
+  try {
+    let articleDao = new ArticleDao();
+    const result = await articleDao.findByIdDetail(req.query._id);
     res.json({ status: 200, result: result });
   } catch (error) {
     res.json({
@@ -68,6 +76,7 @@ router.post(
       const result = await articleDao.create({
         title: req.body.title,
         cover: req.body.cover,
+        snippet: req.body.snippet,
         content: req.body.content,
         type: req.body.type,
         auth: req.body.auth,
@@ -80,6 +89,33 @@ router.post(
         status: 500,
         error,
         msg: error && error.code === 11000 ? "该文章已存在！" : "服务出错！",
+      });
+    }
+  }
+);
+
+// 文章阅读数加1
+router.post(
+  "/incCount",
+  [check("_id").notEmpty().withMessage("缺少_id！")],
+  async (req, res) => {
+    var errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.json({ status: 403, errors: errors.mapped() });
+    }
+    try {
+      let articleDao = new ArticleDao();
+      // 更新
+      const result = await articleDao.update(
+        { _id: req.body._id },
+        { $inc: { viewCount: 1 } }
+      );
+      res.json({ status: 200, result: result });
+    } catch (error) {
+      res.json({
+        status: 500,
+        error,
+        msg: "服务出错！",
       });
     }
   }
@@ -102,14 +138,14 @@ router.post(
       // 更新
       const result = await articleDao.update(
         { _id: req.body._id },
-        req.body.updater
+        { ...req.body.updater, updateTime: Date.now }
       );
       res.json({ status: 200, result: result });
     } catch (error) {
       res.json({
         status: 500,
         error,
-        msg: error && error.code === 11000 ? "该文章已存在！" : "服务出错！",
+        msg: "服务出错！",
       });
     }
   }
@@ -138,5 +174,20 @@ router.delete(
     }
   }
 );
+
+// 测试
+router.get("/test", async (req, res) => {
+  try {
+    let articleDao = new ArticleDao();
+    const result = await articleDao.categoryArticleCount();
+    res.json({ status: 200, result: result });
+  } catch (error) {
+    res.json({
+      status: 500,
+      error,
+      msg: "服务出错！",
+    });
+  }
+});
 
 module.exports = router;

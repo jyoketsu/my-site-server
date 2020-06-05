@@ -2,11 +2,21 @@ var express = require("express");
 var router = express.Router();
 const { check, validationResult } = require("express-validator");
 const CategoryDao = require("../dao/categoryDao");
+const ArticleDao = require("../dao/articleDao");
 
 // 获取分类
 router.get("/", async (req, res) => {
   let categoryDao = new CategoryDao();
-  const result = await categoryDao.findAll();
+  let articleDao = new ArticleDao();
+  let result = await categoryDao.findAll();
+  const countRes = await articleDao.categoryArticleCount();
+  for (let index = 0; index < result.length; index++) {
+    const element = result[index];
+    const target = countRes.find(
+      (res) => String(res._id) === String(element._id)
+    );
+    element.count = target ? target.count : 0;
+  }
   res.json({ status: 200, result: result });
 });
 

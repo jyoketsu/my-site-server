@@ -2,11 +2,21 @@ var express = require("express");
 var router = express.Router();
 const { check, validationResult } = require("express-validator");
 const TagDao = require("../dao/tagDao");
+const ArticleDao = require("../dao/articleDao");
 
 // 获取标签
 router.get("/", async (req, res) => {
   let tagDao = new TagDao();
-  const result = await tagDao.findAll();
+  let articleDao = new ArticleDao();
+  let result = await tagDao.findAll();
+  const countRes = await articleDao.tagArticleCount();
+  for (let index = 0; index < result.length; index++) {
+    const element = result[index];
+    const target = countRes.find(
+      (res) => String(res._id) === String(element._id)
+    );
+    element.count = target ? target.count : 0;
+  }
   res.json({ status: 200, result: result });
 });
 

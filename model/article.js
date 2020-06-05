@@ -11,6 +11,10 @@ let articleSchema = new Schema(
     cover: {
       type: String,
     },
+    // 片段
+    snippet: {
+      type: String,
+    },
     content: {
       type: String,
       required: [true, "内容不能为空"],
@@ -51,7 +55,7 @@ let articleSchema = new Schema(
     },
   },
   {
-    timestamps: { createdAt: "createTime", updatedAt: "updateTime" },
+    timestamps: { createdAt: "createTime" },
   }
 );
 
