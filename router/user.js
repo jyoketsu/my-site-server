@@ -27,11 +27,17 @@ router.post("/register", createValidationChecks, async (req, res) => {
   }
   let userDao = new UserDao();
   try {
+    // 查看是有有博主
+    const hasBloggerRes = await userDao.findOne({
+      role: 0,
+    });
+    // 没有，则当前注册的用户为博主
+    let role = hasBloggerRes ? 1 : 0;
     // 创建用户
     const result = await userDao.create({
       username: req.body.username,
       password: req.body.password,
-      role: req.body.role,
+      role: role,
     });
     // 将用户id传入并生成token
     let jwt = new JwtUtil(result._id);
@@ -81,7 +87,7 @@ router.get("/login", async (req, res) => {
 router.get("/blogger", async (req, res) => {
   let userDao = new UserDao();
   const result = await userDao.findOne({
-    role: 1,
+    role: 0,
   });
   res.json({ status: 200, result: result });
 });
@@ -113,5 +119,29 @@ router.post("/update", updateValidationChecks, async (req, res) => {
     });
   }
 });
+
+// 删除用户
+router.delete(
+  "/delete",
+  [check("_id").notEmpty().withMessage("缺少_id！")],
+  async (req, res) => {
+    var errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.json({ status: 403, errors: errors.mapped() });
+    }
+    try {
+      let userDao = new UserDao();
+      // 删除
+      const result = await userDao.deleteOne({ _id: req.body._id });
+      res.json({ status: 200, result: result });
+    } catch (error) {
+      res.json({
+        status: 500,
+        error,
+        msg: "服务出错！",
+      });
+    }
+  }
+);
 
 module.exports = router;

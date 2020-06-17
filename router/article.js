@@ -138,7 +138,7 @@ router.post(
       // 更新
       const result = await articleDao.update(
         { _id: req.body._id },
-        { ...req.body.updater, updateTime: Date.now }
+        { ...req.body.updater, updateTime: new Date() }
       );
       res.json({ status: 200, result: result });
     } catch (error) {

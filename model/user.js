@@ -28,7 +28,10 @@ let userSchema = new Schema(
     // 头像地址
     avatar: String,
     // 权限：博主：0；用户、游客：1
-    role: Number,
+    role: {
+      type: Number,
+      default: 1,
+    },
     createTime: {
       type: Date,
       default: Date.now,
