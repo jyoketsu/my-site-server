@@ -1,5 +1,5 @@
 time=$(date "+%Y-%m-%d %H:%M:%S")
-memo=time
+memo=$time
 if [ $1 ]; then
    memo=$1
 fi
