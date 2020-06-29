@@ -5,3 +5,5 @@
 yarn.lock
 private.pem
 public.pem
+
+package-lock.json

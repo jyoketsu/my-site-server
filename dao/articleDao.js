@@ -32,7 +32,7 @@ class ArticleDao extends BaseDao {
         .populate("tags", { name: 1, color: 1 })
         .skip(skip)
         .limit(pageSize)
-        .sort(sorter ? sorter : { updateTime: -1 })
+        .sort(sorter ? sorter : { createTime: -1 })
         .select("-content")
         .exec(function (err, record) {
           if (err) {

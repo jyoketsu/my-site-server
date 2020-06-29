@@ -6,9 +6,17 @@ const ArticleDao = require("../dao/articleDao");
 // 获取文章
 router.get("/", async (req, res) => {
   try {
+    const keyword = req.query.keyword;
     let articleDao = new ArticleDao();
     const result = await articleDao.find(
-      {},
+      keyword
+        ? {
+            $or: [
+              { title: eval("/" + keyword + "/i") },
+              { content: eval("/" + keyword + "/i") },
+            ],
+          }
+        : {},
       null,
       req.query.current ? parseInt(req.query.current) : undefined,
       req.query.pageSize ? parseInt(req.query.pageSize) : undefined
