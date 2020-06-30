@@ -21,9 +21,8 @@ let userSchema = new Schema(
     // 邮箱
     email: {
       type: String,
-      unique: true,
       max: 50,
-      trim: true,
+      default: "",
     },
     // 头像地址
     avatar: String,

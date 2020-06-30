@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 const { check, validationResult } = require("express-validator");
 const ArticleDao = require("../dao/articleDao");
+const { checkEditable } = require("../util/checkAuth");
 
 // 获取文章
 router.get("/", async (req, res) => {
@@ -73,6 +74,10 @@ router.post(
     check("category").notEmpty().withMessage("缺少参数：category"),
   ],
   async (req, res) => {
+    const editable = checkEditable(req, res);
+    if (!editable) {
+      return;
+    }
     // 校验
     var errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -137,6 +142,10 @@ router.post(
     check("updater").notEmpty().withMessage("缺少参数updater"),
   ],
   async (req, res) => {
+    const editable = checkEditable(req, res);
+    if (!editable) {
+      return;
+    }
     var errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.json({ status: 403, errors: errors.mapped() });
@@ -164,6 +173,12 @@ router.delete(
   "/delete",
   [check("_id").notEmpty().withMessage("缺少_id！")],
   async (req, res) => {
+    
+    const editable = checkEditable(req, res);
+    if (!editable) {
+      return;
+    }
+
     var errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.json({ status: 403, errors: errors.mapped() });

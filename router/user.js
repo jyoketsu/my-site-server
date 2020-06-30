@@ -39,8 +39,8 @@ router.post("/register", createValidationChecks, async (req, res) => {
       password: req.body.password,
       role: role,
     });
-    // 将用户id传入并生成token
-    let jwt = new JwtUtil(result._id);
+    // 将用户传入并生成token
+    let jwt = new JwtUtil(result);
     let token = jwt.generateToken();
     res.json({ status: 200, token: token, result: result });
   } catch (error) {
@@ -56,12 +56,12 @@ router.post("/register", createValidationChecks, async (req, res) => {
 router.get("/loginByToken", async (req, res) => {
   let token = req.headers.token;
   let jwt = new JwtUtil(token);
-  let _id = jwt.verifyToken();
-  if (_id == "err") {
+  let result = jwt.verifyToken();
+  if (result == "err") {
     res.send({ status: 403, msg: "登录已过期,请重新登录" });
   } else {
-    let userDao = new UserDao();
-    const result = await userDao.findById(_id);
+    // let userDao = new UserDao();
+    // const result = await userDao.findById(_id);
     res.json({ status: 200, token: token, result: result });
   }
 });
@@ -74,8 +74,8 @@ router.get("/login", async (req, res) => {
     password: req.query.password,
   });
   if (result) {
-    // 将用户id传入并生成token
-    let jwt = new JwtUtil(result._id);
+    // 将用户传入并生成token
+    let jwt = new JwtUtil(result);
     let token = jwt.generateToken();
     res.json({ status: 200, token: token, result: result });
   } else {
