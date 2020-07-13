@@ -1,5 +1,7 @@
 var express = require("express");
 var router = express.Router();
+var mongoose = require("mongoose");
+var ObjectId = mongoose.Types.ObjectId;
 const { check, validationResult } = require("express-validator");
 const ArticleDao = require("../dao/articleDao");
 const { checkEditable } = require("../util/checkAuth");
@@ -8,22 +10,33 @@ const { checkEditable } = require("../util/checkAuth");
 router.get("/", async (req, res) => {
   try {
     const keyword = req.query.keyword;
+    const category = req.query.category;
+    const tag = req.query.tag;
     let articleDao = new ArticleDao();
+
+    let filter = {};
+    if (keyword) {
+      filter["$or"] = [
+        { title: eval("/" + keyword + "/i") },
+        { content: eval("/" + keyword + "/i") },
+      ];
+    }
+    if (category) {
+      filter["category"] = ObjectId(category);
+    }
+    if (tag) {
+      filter["tags"] = { $elemMatch: { $eq: ObjectId(tag) } };
+    }
+
     const result = await articleDao.find(
-      keyword
-        ? {
-            $or: [
-              { title: eval("/" + keyword + "/i") },
-              { content: eval("/" + keyword + "/i") },
-            ],
-          }
-        : {},
+      filter,
       null,
       req.query.current ? parseInt(req.query.current) : undefined,
       req.query.pageSize ? parseInt(req.query.pageSize) : undefined
     );
     res.json({ status: 200, result: result });
   } catch (error) {
+    console.log("---error---", error);
     res.json({
       status: 500,
       error,
@@ -173,7 +186,6 @@ router.delete(
   "/delete",
   [check("_id").notEmpty().withMessage("缺少_id！")],
   async (req, res) => {
-    
     const editable = checkEditable(req, res);
     if (!editable) {
       return;

@@ -16,7 +16,8 @@ class Jwt {
     let token = jwt.sign(
       {
         data,
-        exp: created + 60 * 30,
+        // 有效期：7天
+        exp: created + 60 * 60 * 24 * 7,
       },
       { key: cert, passphrase: "jyoketsu" },
       { algorithm: "RS256" }
