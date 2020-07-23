@@ -25,11 +25,19 @@ let userSchema = new Schema(
       default: "",
     },
     // 头像地址
-    avatar: String,
+    avatar: {
+      type: String,
+      max: 200,
+    },
     // 权限：博主：0；用户、游客：1
     role: {
       type: Number,
       default: 1,
+    },
+    // 个人简介
+    profile: {
+      type: String,
+      max: 500,
     },
     createTime: {
       type: Date,

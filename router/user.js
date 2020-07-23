@@ -10,6 +10,20 @@ router.get("/", async (req, res) => {
   res.json({ status: 200, result: result });
 });
 
+router.get("/detail", async (req, res) => {
+  try {
+    let userDao = new UserDao();
+    const result = await userDao.findById(req.query._id);
+    res.json({ status: 200, result: result });
+  } catch (error) {
+    res.json({
+      status: 500,
+      error,
+      msg: "服务出错！",
+    });
+  }
+});
+
 // 校验
 const createValidationChecks = [
   check("username").isLength({ min: 1 }).withMessage("请输入用户名！"),
@@ -98,7 +112,7 @@ const updateValidationChecks = [
   check("updater").notEmpty().withMessage("缺少参数updater"),
 ];
 // 修改
-router.post("/update", updateValidationChecks, async (req, res) => {
+router.patch("/update", updateValidationChecks, async (req, res) => {
   var errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.json({ status: 403, errors: errors.mapped() });
