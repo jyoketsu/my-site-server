@@ -6,7 +6,7 @@ const LinkDao = require("../dao/linkDao");
 // 获取链接
 router.get("/", async (req, res) => {
   let linkDao = new LinkDao();
-  const result = await linkDao.findAll();
+  const result = await linkDao.find();
   res.json({ status: 200, result: result });
 });
 
@@ -45,7 +45,7 @@ router.post(
 );
 
 // 修改链接
-router.post(
+router.patch(
   "/update",
   [
     check("_id").notEmpty().withMessage("缺少_id！"),

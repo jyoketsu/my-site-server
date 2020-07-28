@@ -1,8 +1,13 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
+let order = 1;
+// 用户排序的字段
+let Order = { type: Number, default: () => order++ };
+
 let linkSchema = new Schema(
   {
+    order: Order,
     name: {
       type: String,
       unique: true,
@@ -35,4 +40,14 @@ let linkSchema = new Schema(
   }
 );
 
-module.exports = mongoose.model("Link", linkSchema);
+const model = mongoose.model("Link", linkSchema);
+module.exports = model;
+
+model
+  .find({ order: { $gt: 0 } })
+  .sort({ order: -1 })
+  .then(([first, ...others]) => {
+    if (first) {
+      order = first.order + 1;
+    }
+  });

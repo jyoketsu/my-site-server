@@ -66,12 +66,11 @@ router.post(
     check("updater").notEmpty().withMessage("缺少参数updater"),
   ],
   async (req, res) => {
-
     const editable = checkEditable(req, res);
     if (!editable) {
       return;
     }
-    
+
     var errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.json({ status: 403, errors: errors.mapped() });
@@ -99,7 +98,6 @@ router.delete(
   "/delete",
   [check("_id").notEmpty().withMessage("缺少_id！")],
   async (req, res) => {
-
     const editable = checkEditable(req, res);
     if (!editable) {
       return;
@@ -123,5 +121,20 @@ router.delete(
     }
   }
 );
+
+// 计数
+router.get("/count", async (req, res) => {
+  try {
+    let tagDao = new TagDao();
+    const result = await tagDao.count();
+    res.json({ status: 200, result: result });
+  } catch (error) {
+    res.json({
+      status: 500,
+      error,
+      msg: "服务出错！",
+    });
+  }
+});
 
 module.exports = router;

@@ -225,4 +225,19 @@ router.get("/test", async (req, res) => {
   }
 });
 
+// 计数
+router.get("/count", async (req, res) => {
+  try {
+    let articleDao = new ArticleDao();
+    const result = await articleDao.count();
+    res.json({ status: 200, result: result });
+  } catch (error) {
+    res.json({
+      status: 500,
+      error,
+      msg: "服务出错！",
+    });
+  }
+});
+
 module.exports = router;
