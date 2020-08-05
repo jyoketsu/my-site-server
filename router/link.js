@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 const { check, validationResult } = require("express-validator");
 const LinkDao = require("../dao/linkDao");
+const { checkEditable } = require("../util/checkAuth");
 
 // 获取链接
 router.get("/", async (req, res) => {
@@ -25,6 +26,12 @@ router.post(
     if (!errors.isEmpty()) {
       return res.json({ status: 403, errors: errors.mapped() });
     }
+
+    const editable = checkEditable(req, res);
+    if (!editable) {
+      return;
+    }
+
     let linkDao = new LinkDao();
     try {
       // 创建
@@ -56,6 +63,12 @@ router.patch(
     if (!errors.isEmpty()) {
       return res.json({ status: 403, errors: errors.mapped() });
     }
+
+    const editable = checkEditable(req, res);
+    if (!editable) {
+      return;
+    }
+
     try {
       let linkDao = new LinkDao();
       // 更新
@@ -83,6 +96,12 @@ router.delete(
     if (!errors.isEmpty()) {
       return res.json({ status: 403, errors: errors.mapped() });
     }
+
+    const editable = checkEditable(req, res);
+    if (!editable) {
+      return;
+    }
+    
     try {
       let linkDao = new LinkDao();
       // 删除

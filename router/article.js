@@ -148,7 +148,7 @@ router.post(
 );
 
 // 修改文章
-router.post(
+router.patch(
   "/update",
   [
     check("_id").notEmpty().withMessage("缺少_id！"),

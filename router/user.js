@@ -3,6 +3,7 @@ var router = express.Router();
 const { check, validationResult } = require("express-validator");
 const UserDao = require("../dao/userDao");
 const JwtUtil = require("../util/jwt");
+const { checkEditable } = require("../util/checkAuth");
 
 router.get("/", async (req, res) => {
   let userDao = new UserDao();
@@ -116,6 +117,10 @@ router.patch("/update", updateValidationChecks, async (req, res) => {
   var errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.json({ status: 403, errors: errors.mapped() });
+  }
+  const editable = checkEditable(req, res);
+  if (!editable) {
+    return;
   }
   try {
     let userDao = new UserDao();

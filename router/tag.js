@@ -9,7 +9,7 @@ const { checkEditable } = require("../util/checkAuth");
 router.get("/", async (req, res) => {
   let tagDao = new TagDao();
   let articleDao = new ArticleDao();
-  let result = await tagDao.findAll();
+  let result = await tagDao.findAll(null, null, { sort: { updateTime: -1 } });
   const countRes = await articleDao.tagArticleCount();
   for (let index = 0; index < result.length; index++) {
     const element = result[index];
@@ -59,7 +59,7 @@ router.post(
 );
 
 // 修改标签
-router.post(
+router.patch(
   "/update",
   [
     check("_id").notEmpty().withMessage("缺少_id！"),

@@ -64,15 +64,17 @@ class BaseDao {
   /**
    * 查询所有符合条件 docs
    *
-   * @param condition 查找条件
-   * @param constraints
+   * @param filter 查询条件
+   * @param projection 指定要包含或排除哪些 document 字段(也称为查询“投影”)
+   * @param options
    * @returns {Promise}
    */
-  findAll(condition, constraints) {
+  findAll(filter, projection, options) {
     return new Promise((resolve, reject) => {
       this.Model.find(
-        condition,
-        constraints ? constraints : null,
+        filter,
+        projection ? projection : null,
+        options ? options : null,
         (error, results) => {
           if (error) {
             console.log("findAll error--> ", error);
