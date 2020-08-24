@@ -52,7 +52,7 @@ router.post(
       res.json({
         status: 500,
         error,
-        msg: error && error.code === 11000 ? "该标签已存在！" : "服务出错！",
+        msg: error && error.code === 11000 ? "唯一字段重复！" : "服务出错！",
       });
     }
   }

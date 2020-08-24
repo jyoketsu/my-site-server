@@ -8,6 +8,7 @@ const visitor = require("./router/visitor");
 const link = require("./router/link");
 const article = require("./router/article");
 const system = require("./router/system");
+const resume = require("./router/resume");
 
 // 连接数据库
 mongoose.connect("mongodb://localhost/mySite", { useNewUrlParser: true });
@@ -47,6 +48,7 @@ app.use("/visitor", visitor);
 app.use("/link", link);
 app.use("/article", article);
 app.use("/system", system);
+app.use("/resume", resume);
 
 // 启动服务
 var server = app.listen(8099, () => {
