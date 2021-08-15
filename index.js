@@ -11,7 +11,7 @@ const system = require("./router/system");
 const resume = require("./router/resume");
 
 // 连接数据库
-mongoose.connect("mongodb://localhost/mySite", { useNewUrlParser: true });
+mongoose.connect("mongodb://139.155.124.76/mySite", { useNewUrlParser: true });
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", function () {
