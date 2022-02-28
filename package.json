@@ -1,11 +1,11 @@
 {
-  "name": "my-blog-back-end",
+  "name": "my-site-back-end",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon index.ts",
+    "build": "tsc"
   },
   "author": "xujie",
   "license": "ISC",
@@ -14,5 +14,13 @@
     "express-validator": "^6.5.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.15"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/jsonwebtoken": "^8.5.8",
+    "@types/node": "^17.0.21",
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.5.0",
+    "typescript": "^4.5.5"
   }
 }
