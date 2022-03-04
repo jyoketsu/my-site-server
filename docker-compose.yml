@@ -1,0 +1,33 @@
+# 定义版本，不指定默认为版本 1，新版本功能更多
+version: '3'
+
+services:
+  # 名称
+  server:
+    # 镜像
+    # image: my-site-server
+    # 相当于 docker build .
+    build: .
+    restart: unless-stopped
+    # 定义环境变量，类似 -e
+    environment:
+      - PORT=8099
+      - MONGO_URL=mongodb://mongo:27017/mySite?authSource=admin
+      - MONGO_USER=jyoketsu
+      - MONGO_PASS=528931
+    depends_on:
+      - mongo
+    ports:
+      - 8099:8099
+
+  mongo:
+    image: mongo:5.0
+    restart: unless-stopped
+    volumes:
+      - /Users/jyoketsu/Documents/var/docker/mongo/data:/data/db
+      # - ./data/db:/data/db
+      #- ./data/dump:/dump
+    command: [ --auth ]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 528931

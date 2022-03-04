@@ -11,15 +11,19 @@ import system from "./router/system";
 import resume from "./router/resume";
 
 // 连接数据库
-mongoose.connect("mongodb://localhost:27017/mySite?authSource=admin", {
-  useCreateIndex: true,
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-  user: "jyoketsu", // username
-  pass: "528931", // password
-});
-var db = mongoose.connection;
+mongoose.connect(
+  process.env.MONGO_URL || "mongodb://localhost:27017/mySite?authSource=admin",
+  {
+    useCreateIndex: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    user: process.env.MONGO_USER || "jyoketsu", // username
+    pass: process.env.MONGO_PASS || "528931", // password
+  }
+);
+
+const db = mongoose.connection;
 db.on("error", console.error.bind(console, "数据库连接失败！！"));
 db.once("open", function () {
   console.log("数据库连接了");
@@ -40,7 +44,7 @@ app.all("*", function (req, res, next) {
 app.use(express.static("public"));
 
 // body-parser
-var bodyParser = require("body-parser");
+const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -58,11 +62,11 @@ app.use("/system", system);
 app.use("/resume", resume);
 
 // 启动服务
-var server = app.listen(8099, () => {
+const server = app.listen(process.env.PORT || 8099, () => {
   if (server && server.address() && server.address()) {
     // const host = server.address().address;
     // const port = server.address().port;
     // console.log("kaoru started! http://%s:%s", host, port);
-    console.log("---started!! 8099---");
+    console.log(`---started!! ${process.env.PORT || 8099}---`);
   }
 });
