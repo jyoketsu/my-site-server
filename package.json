@@ -1,7 +1,7 @@
 {
   "name": "my-site-server",
   "version": "0.0.1",
-  "description": "",
+  "description": "以Express + TypeScript + Mongoose技术栈来构建的应用",
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.ts",
