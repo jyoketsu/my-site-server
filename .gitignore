@@ -8,3 +8,4 @@ public.pem
 
 package-lock.json
 /docker/mongo_data
+build
